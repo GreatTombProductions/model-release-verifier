@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Release Status Verifier — vendor-confirmed AI model claims</title>
+<meta name="description" content="Check an AI model release claim against the vendor's own pages: confirmed, contradicted, or unverifiable — with the evidence quoted.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Model Release Status Verifier</h1>
+  <p class="tagline">Paste an AI model release claim. Get a verdict checked against the vendor's own pages — with the evidence quoted.</p>
+</header>
+
+<main>
+  <section id="verifier">
+    <label for="claim">The claim</label>
+    <textarea id="claim" rows="3" placeholder='e.g. "DeepSeek released V4-Flash on July 31" or "OpenAI retired gpt-4o-2024-05-13 on October 23, 2026"'></textarea>
+    <div class="controls">
+      <button id="verify-btn">Verify</button>
+      <span class="examples">
+        Try:
+        <a href="#" class="ex" data-claim="DeepSeek released V4-Flash on July 31">a DeepSeek claim</a> ·
+        <a href="#" class="ex" data-claim="Anthropic retired claude-opus-4-1 on August 5, 2026">a retired model</a> ·
+        <a href="#" class="ex" data-claim="Claude Fable 5 will be retired on January 1, 2027">a date conflict</a> ·
+        <a href="#" class="ex" data-claim="Google released gemini-3 on May 1">an uncovered vendor</a>
+      </span>
+    </div>
+    <div id="result" class="hidden"></div>
+  </section>
+
+  <section id="about">
+    <h2>What this checks</h2>
+    <p>AI news aggregators, SEO trackers, and vendor marketing all make claims about model releases.
+       This tool checks a claim against <strong>the vendor's own pages</strong> — the model lists and
+       deprecation schedules that Anthropic, OpenAI, DeepSeek, and Moonshot (Kimi) publish themselves.</p>
+    <div class="verdicts">
+      <div><span class="badge confirmed">confirmed</span> the vendor's own page supports the claim</div>
+      <div><span class="badge contradicted">contradicted</span> the vendor's page shows a different state, or no such model</div>
+      <div><span class="badge partial">partial</span> one part confirmed, another uncheckable (e.g. existence yes, release date no)</div>
+      <div><span class="badge unverifiable">unverifiable</span> no vendor surface exists for this claim class — a documented gap, not a clean bill of health</div>
+    </div>
+    <h3>What each vendor publishes</h3>
+    <table class="coverage" id="coverage-table">
+      <thead><tr><th>Vendor</th><th>Current-model list</th><th>Deprecation/retirement page</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="fine">Vendors do not publish release dates for most models, so a release-date claim can at most
+       confirm that the model exists. A vendor with no deprecation page (DeepSeek, Kimi) simply cannot
+       confirm or contradict retirement claims — the gap is shown, never assumed clean.
+       Every verdict quotes the page it rests on, with the fetch timestamp.</p>
+  </section>
+
+  <section id="methodology">
+    <h2>Method</h2>
+    <p>The vendor pages are fetched at build time (multi-transport, per-source deadline) and the resulting
+       model index is baked into this static site. Matching is done entirely in your browser —
+       nothing is sent anywhere. Identifiers are normalized across snapshot suffixes
+       (<code>gpt-4o-2024-05-13</code> and <code>gpt-4o</code> are the same model family) and family names
+       ("Claude Fable 5" → <code>claude-fable-5</code>).</p>
+    <p>Index built <strong id="built-date">—</strong> · sources: <a href="https://docs.claude.com/en/docs/about-claude/model-deprecations" target="_blank" rel="noopener">Anthropic deprecations</a> ·
+       <a href="https://developers.openai.com/api/docs/deprecations" target="_blank" rel="noopener">OpenAI deprecations</a> ·
+       <a href="https://api-docs.deepseek.com/" target="_blank" rel="noopener">DeepSeek API docs</a> ·
+       <a href="https://platform.kimi.ai/" target="_blank" rel="noopener">Kimi platform</a></p>
+  </section>
+</main>
+
+<footer>
+  <p>Static tool. No accounts, no tracking, no data leaves your browser. Data is from the vendors' own public pages.</p>
+</footer>
+
+<script src="matcher.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

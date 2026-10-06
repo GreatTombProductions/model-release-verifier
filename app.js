@@ -48,6 +48,21 @@
       " " + d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" }) + " UTC";
   }
 
+  function renderCaptures() {
+    const list = $("#captures");
+    if (!list || !INDEX || !INDEX.coverage) return;
+    const rows = [];
+    for (const c of Object.values(INDEX.coverage)) {
+      for (const sfc of Object.values(c.surfaces || {})) {
+        rows.push(`<li><a href="${esc(sfc.url)}" target="_blank" rel="noopener">${esc(sfc.url.replace(/^https:\/\//, ""))}</a> · ` +
+          (sfc.status === "ok"
+            ? `fetched ${esc(fmtFetched(sfc.fetched_at))} · <code>${esc(sfc.raw_sha256 || "no receipt")}</code>`
+            : `unreachable at build time`) + `</li>`);
+      }
+    }
+    list.innerHTML = rows.join("");
+  }
+
   function renderCoverage() {
     const tbody = $("#coverage-table tbody");
     if (!INDEX || !INDEX.coverage) return;
@@ -59,7 +74,10 @@
         <td>${esc(v)}</td>
         <td>${c.surfaces && Object.keys(c.surfaces).some((k) => k.endsWith("_models") || k.endsWith("_docs") || k.endsWith("_platform"))
           ? '<span class="check">✓ published</span>' : '<span class="x">✗ none</span>'}</td>
-        <td>${c.has_lifecycle_page ? '<span class="check">✓ published</span>' : '<span class="gap">✗ none — retirement claims unverifiable (documented gap)</span>'}</td>
+        <td>${c.has_lifecycle_page ? '<span class="check">✓ published</span>'
+          : (INDEX.models || []).some((m) => m.vendor === v && m.kind === "lifecycle")
+            ? '<span class="gap">✗ none — only retirements stated in its docs can be checked (documented gap)</span>'
+            : '<span class="gap">✗ none — retirement claims unverifiable (documented gap)</span>'}</td>
       </tr>`;
     }).join("");
   }
@@ -119,6 +137,7 @@
       INDEX = await resp.json();
       $("#built-date").textContent = INDEX.built || "—";
       renderCoverage();
+      renderCaptures();
     } catch (e) {
       $("#result").classList.remove("hidden");
       $("#result").innerHTML = `<div class="verdict-card unverifiable"><p class="reason">Could not load the model index — is the data/ folder deployed with the site?</p></div>`;

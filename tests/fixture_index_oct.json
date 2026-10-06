@@ -1,0 +1,267 @@
+{
+ "v": 1,
+ "built": "2026-10-07",
+ "short_aliases": {
+  "v4.1 flash": [
+   "DeepSeek",
+   "deepseek-v4.1-flash"
+  ],
+  "v4.1-flash": [
+   "DeepSeek",
+   "deepseek-v4.1-flash"
+  ],
+  "v4 flash": [
+   "DeepSeek",
+   "deepseek-v4-flash"
+  ],
+  "v4-flash": [
+   "DeepSeek",
+   "deepseek-v4-flash"
+  ],
+  "v4 pro": [
+   "DeepSeek",
+   "deepseek-v4-pro"
+  ],
+  "v4-pro": [
+   "DeepSeek",
+   "deepseek-v4-pro"
+  ],
+  "deepseek flash": [
+   "DeepSeek",
+   "deepseek-flash"
+  ],
+  "k3": [
+   "Kimi",
+   "kimi-k3"
+  ]
+ },
+ "aliases": {},
+ "coverage": {
+  "Anthropic": {
+   "vendor": "Anthropic",
+   "has_lifecycle_page": true,
+   "surfaces": {},
+   "gaps": []
+  },
+  "OpenAI": {
+   "vendor": "OpenAI",
+   "has_lifecycle_page": true,
+   "surfaces": {},
+   "gaps": []
+  },
+  "DeepSeek": {
+   "vendor": "DeepSeek",
+   "has_lifecycle_page": false,
+   "surfaces": {},
+   "gaps": [
+    "DeepSeek publishes no model-deprecation/lifecycle page"
+   ]
+  },
+  "Kimi": {
+   "vendor": "Kimi",
+   "has_lifecycle_page": false,
+   "surfaces": {},
+   "gaps": [
+    "Kimi publishes no model-deprecation/lifecycle page"
+   ]
+  }
+ },
+ "models": [
+  {
+   "vendor": "Anthropic",
+   "model_id": "claude-opus-5-5",
+   "family": "Claude Opus 5.5",
+   "kind": "current",
+   "status": "listed",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": null,
+   "replacement": null,
+   "source_url": "https://docs.claude.com/en/docs/about-claude/models/overview",
+   "evidence": "Listed on the model overview table as Claude Opus 5.5 (claude-opus-5-5)",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "Anthropic",
+   "model_id": "claude-sonnet-5-5",
+   "family": "Claude Sonnet 5.5",
+   "kind": "current",
+   "status": "listed",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": null,
+   "replacement": null,
+   "source_url": "https://docs.claude.com/en/docs/about-claude/models/overview",
+   "evidence": "Listed on the model overview table as Claude Sonnet 5.5 (claude-sonnet-5-5)",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "Anthropic",
+   "model_id": "claude-opus-5-5",
+   "family": "Claude Opus 5.5",
+   "kind": "lifecycle",
+   "status": "active",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": "2027-09-22",
+   "replacement": null,
+   "source_url": "https://docs.claude.com/en/docs/about-claude/model-deprecations",
+   "evidence": "Active; retirement Not sooner than September 22, 2027",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "Anthropic",
+   "model_id": "claude-opus-5",
+   "family": "Claude Opus 5",
+   "kind": "lifecycle",
+   "status": "active",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": "2027-07-24",
+   "replacement": null,
+   "source_url": "https://docs.claude.com/en/docs/about-claude/model-deprecations",
+   "evidence": "Active; retirement Not sooner than July 24, 2027",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "Anthropic",
+   "model_id": "claude-opus-4-6",
+   "family": "Claude Opus 4.6",
+   "kind": "lifecycle",
+   "status": "active",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": "2027-02-05",
+   "replacement": null,
+   "source_url": "https://docs.claude.com/en/docs/about-claude/model-deprecations",
+   "evidence": "Active; retirement Not sooner than February 5, 2027",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "Anthropic",
+   "model_id": "claude-sonnet-4-5-20250929",
+   "family": "Claude Sonnet 4.5",
+   "kind": "lifecycle",
+   "status": "deprecated",
+   "announced": "2026-09-30",
+   "retirement": "2026-11-30",
+   "retirement_not_before": null,
+   "replacement": "claude-sonnet-5-5",
+   "source_url": "https://docs.claude.com/en/docs/about-claude/model-deprecations",
+   "evidence": "Deprecated; retirement November 30, 2026",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "Anthropic",
+   "model_id": "claude-opus-4-20250514",
+   "family": "Claude Opus 4",
+   "kind": "lifecycle",
+   "status": "retired",
+   "announced": "2026-04-14",
+   "retirement": "2026-06-15",
+   "retirement_not_before": null,
+   "replacement": "claude-opus-4-8",
+   "source_url": "https://docs.claude.com/en/docs/about-claude/model-deprecations",
+   "evidence": "Retired; retirement June 15, 2026",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "OpenAI",
+   "model_id": "gpt-6.1-sol",
+   "family": "GPT-6.1 Sol",
+   "kind": "current",
+   "status": "listed",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": null,
+   "replacement": null,
+   "source_url": "https://developers.openai.com/api/docs/models",
+   "evidence": "Listed as a current model (GPT-6.1 Sol): Model ID gpt-6.1-sol",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "OpenAI",
+   "model_id": "gpt-6-luna",
+   "family": "GPT-6 Luna",
+   "kind": "current",
+   "status": "listed",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": null,
+   "replacement": null,
+   "source_url": "https://developers.openai.com/api/docs/models",
+   "evidence": "Listed as a current model (GPT-6 Luna): Model ID gpt-6-luna",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "OpenAI",
+   "model_id": "gpt-5.1",
+   "family": "gpt-5.1",
+   "kind": "lifecycle",
+   "status": "deprecated",
+   "announced": "2026-10-01",
+   "retirement": "2027-04-01",
+   "retirement_not_before": null,
+   "replacement": "gpt-6-sol",
+   "source_url": "https://developers.openai.com/api/docs/deprecations",
+   "evidence": "Announced 2026-10-01; shutdown 2027-04-01; replacement gpt-6-sol",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "DeepSeek",
+   "model_id": "deepseek-flash",
+   "family": "deepseek-flash",
+   "kind": "current",
+   "status": "listed",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": null,
+   "replacement": null,
+   "source_url": "https://api-docs.deepseek.com/",
+   "evidence": "Listed in the API docs model table",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "DeepSeek",
+   "model_id": "deepseek-v4-pro",
+   "family": "deepseek-v4-pro",
+   "kind": "current",
+   "status": "listed",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": null,
+   "replacement": null,
+   "source_url": "https://api-docs.deepseek.com/",
+   "evidence": "Listed in the API docs model table",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "DeepSeek",
+   "model_id": "deepseek-v4-flash",
+   "family": "deepseek-v4-flash",
+   "kind": "lifecycle",
+   "status": "retired",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": null,
+   "replacement": "deepseek-flash",
+   "source_url": "https://api-docs.deepseek.com/",
+   "evidence": "Use deepseek-flash as the model name. The legacy names deepseek-v4-flash and deepseek-v4-flash-vision-exp are still accepted, but the corresponding models have been retired, their requests are served by the DeepSeek-V4.1-Flash model and billed at the Flash price.",
+   "fetched_at": "20261006T225628Z"
+  },
+  {
+   "vendor": "DeepSeek",
+   "model_id": "deepseek-v4.1-flash",
+   "family": "DeepSeek-V4.1-Flash",
+   "kind": "current",
+   "status": "listed",
+   "announced": null,
+   "retirement": null,
+   "retirement_not_before": null,
+   "replacement": null,
+   "source_url": "https://api-docs.deepseek.com/",
+   "evidence": "Named on the API docs page as the model that serves requests sent to the retired legacy names",
+   "fetched_at": "20261006T225628Z"
+  }
+ ]
+}

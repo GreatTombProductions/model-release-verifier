@@ -1,0 +1,74 @@
+{
+  "note": "Run against the shipped index (data/generated/index.json in the source tree). Verdicts were determined by hand from the 2026-10-06 vendor captures; rebuild from new captures means re-deriving these, not copying tool output.",
+  "captured": "20261006T225628Z",
+  "cases": [
+    {
+      "claim": "Anthropic released Claude Opus 5.5",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic released Claude Sonnet 5.5",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic released Claude Fable 5.1",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic will retire Claude Sonnet 4.5 on November 30, 2026",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic deprecated claude-mythos-preview",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic retired Claude 3 Opus on January 5, 2026",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic retired Claude Instant 1.2",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Claude Opus 4.6 will be retired in December 2026",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "DeepSeek released deepseek-flash",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "DeepSeek retired deepseek-v4-flash",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "DeepSeek retired deepseek-v4-flash-vision-exp",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "DeepSeek released V4-Flash on July 31",
+      "verdict": "partial"
+    },
+    {
+      "claim": "DeepSeek is retiring deepseek-v4-pro",
+      "verdict": "unverifiable"
+    },
+    {
+      "claim": "OpenAI released GPT-6.1 Sol",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "OpenAI will shut down gpt-5.1 on April 1, 2027",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "OpenAI released gpt-5.6-sol",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "Kimi launched K3",
+      "verdict": "confirmed"
+    }
+  ]
+}

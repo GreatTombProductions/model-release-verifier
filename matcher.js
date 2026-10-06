@@ -79,11 +79,44 @@
     return (VENDOR_KEYWORDS[vendor] || []).some((k) => claimLow.includes(k));
   }
 
+  function extendId(claim, pos, mid, vendor, index) {
+    /* [extended id, span end] when mid plus the next one or two words names a
+       model in the index, longest first; null otherwise. */
+    const known = new Set();
+    for (const rec of index.models || []) {
+      if (rec.vendor === vendor) {
+        const rid = normalizeModelId(rec.model_id);
+        known.add(rid);
+        known.add(baseId(rid));
+      }
+    }
+    const parts = [];
+    const ends = [];
+    for (let i = 0; i < 2; i++) {
+      const w = /^[ \t]+([A-Za-z0-9][A-Za-z0-9.]*)/.exec(claim.slice(pos));
+      if (!w) break;
+      const word = w[1].replace(/\.+$/, "");
+      parts.push(word.toLowerCase());
+      ends.push(pos + w[0].length - (w[1].length - word.length));
+      pos += w[0].length;
+    }
+    for (let k = parts.length; k > 0; k--) {
+      const cand = mid + "-" + parts.slice(0, k).join("-");
+      if (known.has(cand)) return [cand, ends[k - 1]];
+    }
+    return null;
+  }
+
   function identify(claim, index) {
     /* returns {model, vendor, method, span} | {model:null,...} */
     for (const [vendor, pat] of MODEL_PATTERNS) {
       const m = pat.exec(claim);
-      if (m) return { model: normalizeModelId(m[0]), vendor, method: "id", span: [m.index, m.index + m[0].length] };
+      if (m) {
+        const mid = normalizeModelId(m[0]);
+        const ext = extendId(claim, m.index + m[0].length, mid, vendor, index);
+        if (ext) return { model: ext[0], vendor, method: "id", span: [m.index, ext[1]] };
+        return { model: mid, vendor, method: "id", span: [m.index, m.index + m[0].length] };
+      }
     }
     const claimLow = claim.toLowerCase();
     for (const [aliasKey, pair] of Object.entries(index.short_aliases || {})) {
@@ -289,7 +322,10 @@
     }
 
     if (cls === "retirement") {
-      if (!hasLifecycle) {
+      // A vendor without a lifecycle page can still state a retirement
+      // elsewhere (DeepSeek's model-table footnote); use the stated record.
+      const stated = matches.filter((r) => r.kind === "lifecycle");
+      if (!hasLifecycle && stated.length === 0) {
         return { ...base, verdict: "unverifiable", reason: (
           `${vendor} publishes no model-deprecation page, so retirement ` +
           `claims cannot be checked. (The model may exist — see its ` +
@@ -298,6 +334,21 @@
       }
       const retired = matches.filter((r) => (r.status === "retired" || r.status === "deprecated") && r.retirement);
       if (retired.length === 0) {
+        // retired with no retirement date published (e.g. deepseek-v4-flash)
+        const retiredNodate = matches.filter((r) => r.status === "retired" && !r.retirement);
+        if (retiredNodate.length) {
+          if (dateIso) {
+            return { ...base, verdict: "partial", reason: (
+              `${vendor} states ${modelRef} has been retired but ` +
+              `publishes no retirement date, so the claimed date ` +
+              `(${dateIso}) cannot be checked.`
+            ) };
+          }
+          return { ...base, verdict: "confirmed", reason: (
+            `${vendor} states ${modelRef} has been retired. No ` +
+            `retirement date is published.`
+          ) };
+        }
         const deprNodate = matches.filter((r) => r.status === "deprecated" && !r.retirement);
         if (deprNodate.length) {
           if (claim.toLowerCase().includes("deprecat")) {

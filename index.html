@@ -16,12 +16,13 @@
 <main>
   <section id="verifier">
     <label for="claim">The claim</label>
-    <textarea id="claim" rows="3" placeholder='e.g. "DeepSeek released V4-Flash on July 31" or "OpenAI retired gpt-4o-2024-05-13 on October 23, 2026"'></textarea>
+    <textarea id="claim" rows="3" placeholder='e.g. "Anthropic released Claude Opus 5.5" or "OpenAI retired gpt-4o-2024-05-13 on October 23, 2026"'></textarea>
     <div class="controls">
       <button id="verify-btn">Verify</button>
       <span class="examples">
         Try:
-        <a href="#" class="ex" data-claim="DeepSeek released V4-Flash on July 31">a DeepSeek claim</a> ·
+        <a href="#" class="ex" data-claim="Anthropic released Claude Opus 5.5">a new model</a> ·
+        <a href="#" class="ex" data-claim="DeepSeek retired deepseek-v4-flash">a DeepSeek rename</a> ·
         <a href="#" class="ex" data-claim="Anthropic retired claude-opus-4-1 on August 5, 2026">a retired model</a> ·
         <a href="#" class="ex" data-claim="Claude Fable 5 will be retired on January 1, 2027">a date conflict</a> ·
         <a href="#" class="ex" data-claim="Google released gemini-3 on May 1">an uncovered vendor</a>
@@ -47,8 +48,9 @@
       <tbody></tbody>
     </table>
     <p class="fine">Vendors do not publish release dates for most models, so a release-date claim can at most
-       confirm that the model exists. A vendor with no deprecation page (DeepSeek, Kimi) simply cannot
-       confirm or contradict retirement claims — the gap is shown, never assumed clean.
+       confirm that the model exists. A vendor with no deprecation page (DeepSeek, Kimi) cannot
+       confirm or contradict retirement claims, except where it states a retirement elsewhere in its docs
+       (DeepSeek's model table does, for its legacy Flash names) — the gap is shown, never assumed clean.
        Every verdict quotes the page it rests on, with the fetch timestamp.</p>
   </section>
 
@@ -63,6 +65,8 @@
        <a href="https://developers.openai.com/api/docs/deprecations" target="_blank" rel="noopener">OpenAI deprecations</a> ·
        <a href="https://api-docs.deepseek.com/" target="_blank" rel="noopener">DeepSeek API docs</a> ·
        <a href="https://platform.kimi.ai/" target="_blank" rel="noopener">Kimi platform</a></p>
+    <p class="fine">Each page is kept as captured. Its SHA-256 identifies the exact bytes the index was built from:</p>
+    <ul class="fine" id="captures"></ul>
   </section>
 </main>
 

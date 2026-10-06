@@ -1,0 +1,36 @@
+{
+  "v": 1,
+  "built": "2026-08-13",
+  "short_aliases": {
+    "v4 flash": ["DeepSeek", "deepseek-v4-flash"],
+    "v4-flash": ["DeepSeek", "deepseek-v4-flash"],
+    "v4 pro": ["DeepSeek", "deepseek-v4-pro"],
+    "v4-pro": ["DeepSeek", "deepseek-v4-pro"],
+    "k3": ["Kimi", "kimi-k3"]
+  },
+  "aliases": {},
+  "coverage": {
+    "Anthropic": {"vendor": "Anthropic", "has_lifecycle_page": true, "surfaces": {}, "gaps": []},
+    "OpenAI": {"vendor": "OpenAI", "has_lifecycle_page": true, "surfaces": {}, "gaps": []},
+    "DeepSeek": {"vendor": "DeepSeek", "has_lifecycle_page": false, "surfaces": {}, "gaps": ["DeepSeek publishes no model-deprecation/lifecycle page"]},
+    "Kimi": {"vendor": "Kimi", "has_lifecycle_page": false, "surfaces": {}, "gaps": ["Kimi publishes no model-deprecation/lifecycle page"]}
+  },
+  "models": [
+    {"vendor": "Anthropic", "model_id": "claude-fable-5", "family": "Claude Fable 5", "kind": "current", "status": "listed", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": null, "source_url": "https://docs.claude.com/en/docs/about-claude/models/overview", "evidence": "Listed on the model overview table as Claude Fable 5 (claude-fable-5)", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "Anthropic", "model_id": "claude-opus-5", "family": "Claude Opus 5", "kind": "current", "status": "listed", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": null, "source_url": "https://docs.claude.com/en/docs/about-claude/models/overview", "evidence": "Listed on the model overview table as Claude Opus 5 (claude-opus-5)", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "Anthropic", "model_id": "claude-haiku-4-5-20251001", "family": "Claude Haiku 4.5", "kind": "current", "status": "listed", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": null, "source_url": "https://docs.claude.com/en/docs/about-claude/models/overview", "evidence": "Listed on the model overview table as Claude Haiku 4.5 (claude-haiku-4-5-20251001)", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "Anthropic", "model_id": "claude-opus-4-1-20250805", "family": "Claude Opus 4.1", "kind": "lifecycle", "status": "retired", "announced": "2026-06-05", "retirement": "2026-08-05", "retirement_not_before": null, "replacement": "claude-opus-4-8", "source_url": "https://docs.claude.com/en/docs/about-claude/model-deprecations", "evidence": "Retired; retirement August 5, 2026", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "Anthropic", "model_id": "claude-fable-5", "family": "Claude Fable 5", "kind": "lifecycle", "status": "active", "announced": null, "retirement": null, "retirement_not_before": "2027-06-09", "replacement": null, "source_url": "https://docs.claude.com/en/docs/about-claude/model-deprecations", "evidence": "Active; retirement Not sooner than June 9, 2027", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "Anthropic", "model_id": "claude-mythos-preview", "family": "Claude Mythos Preview", "kind": "lifecycle", "status": "deprecated", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": "claude-mythos-5", "source_url": "https://docs.claude.com/en/docs/about-claude/model-deprecations", "evidence": "Claude Mythos Preview (claude-mythos-preview) is deprecated", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "OpenAI", "model_id": "gpt-5.6-sol", "family": "gpt-5.6-sol", "kind": "current", "status": "listed", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": null, "source_url": "https://developers.openai.com/api/docs/models", "evidence": "Listed as a current model", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "OpenAI", "model_id": "gpt-5.6-terra", "family": "gpt-5.6-terra", "kind": "current", "status": "listed", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": null, "source_url": "https://developers.openai.com/api/docs/models", "evidence": "Listed as a current model", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "OpenAI", "model_id": "gpt-4o-2024-05-13", "family": "gpt-4o-2024-05-13", "kind": "lifecycle", "status": "deprecated", "announced": "2026-04-22", "retirement": "2026-10-23", "retirement_not_before": null, "replacement": "gpt-4o-2024-11-20", "source_url": "https://developers.openai.com/api/docs/deprecations", "evidence": "Announced 2026-04-22; shutdown 2026-10-23", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "OpenAI", "model_id": "chatgpt-4o-latest", "family": "chatgpt-4o-latest", "kind": "lifecycle", "status": "retired", "announced": "2026-01-15", "retirement": "2026-02-17", "retirement_not_before": null, "replacement": "gpt-4o", "source_url": "https://developers.openai.com/api/docs/deprecations", "evidence": "Announced 2026-01-15; shutdown 2026-02-17", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "OpenAI", "model_id": "gpt-4.1-nano", "family": "gpt-4.1-nano", "kind": "lifecycle", "status": "deprecated", "announced": "2026-04-22", "retirement": "2026-10-23", "retirement_not_before": null, "replacement": "gpt-5-nano", "source_url": "https://developers.openai.com/api/docs/deprecations", "evidence": "Announced 2026-04-22; shutdown 2026-10-23", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "DeepSeek", "model_id": "deepseek-v4-flash", "family": "deepseek-v4-flash", "kind": "current", "status": "listed", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": null, "source_url": "https://api-docs.deepseek.com/", "evidence": "Listed in the API docs model list; updated to DeepSeek-V4-Flash-0731", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "DeepSeek", "model_id": "deepseek-v4-pro", "family": "deepseek-v4-pro", "kind": "current", "status": "listed", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": null, "source_url": "https://api-docs.deepseek.com/", "evidence": "Listed in the API docs model list; updated to DeepSeek-V4-Pro-0813", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "DeepSeek", "model_id": "deepseek-v4-flash-0731", "family": "DeepSeek-V4-Flash-0731", "kind": "current", "status": "listed", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": null, "source_url": "https://api-docs.deepseek.com/", "evidence": "Named on the API docs page as the current version of deepseek-v4-flash", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "Kimi", "model_id": "kimi-k2-6", "family": "kimi-k2-6", "kind": "current", "status": "listed", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": null, "source_url": "https://platform.kimi.ai/", "evidence": "Quickstart doc linked from the platform page: /docs/guide/kimi-k2-6-quickstart", "fetched_at": "2026-08-13T00:00:00Z"},
+    {"vendor": "Kimi", "model_id": "kimi-k3", "family": "kimi-k3", "kind": "current", "status": "listed", "announced": null, "retirement": null, "retirement_not_before": null, "replacement": null, "source_url": "https://platform.kimi.ai/", "evidence": "Quickstart doc linked from the platform page: /docs/guide/kimi-k3-quickstart", "fetched_at": "2026-08-13T00:00:00Z"}
+  ]
+}

@@ -13,6 +13,7 @@ Saves raw HTML to data/raw/ for offline parsing.
 """
 from __future__ import annotations
 
+import hashlib
 import subprocess
 import sys
 import threading
@@ -90,6 +91,9 @@ def main() -> None:
             body = fetch(url)
             out = raw / f"{name}-{ts}.html"
             out.write_bytes(body)
+            # Receipt beside the capture; build.py verifies it against the bytes
+            # and ships it in the index (a mismatch or missing receipt fails the build).
+            (raw / f"{name}-{ts}.sha256").write_text(f"{hashlib.sha256(body).hexdigest()}  {out.name}\n", encoding="utf-8")
             print(f"OK   {name}: {len(body)} bytes -> {out.name}")
         except Exception as exc:
             failures.append((name, str(exc)))

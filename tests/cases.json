@@ -1,0 +1,232 @@
+{
+  "cases": [
+    {
+      "claim": "DeepSeek released V4-Flash on July 31",
+      "verdict": "partial"
+    },
+    {
+      "claim": "DeepSeek released deepseek-v4-flash",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic retired claude-opus-4-1 on August 5, 2026",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic retired Claude Opus 4.1",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic retired claude-opus-4-1 on August 1, 2026",
+      "verdict": "partial"
+    },
+    {
+      "claim": "Anthropic retired claude-opus-4-1 on September 1, 2026",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "OpenAI shut down gpt-4o on December 1, 2025",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "OpenAI shut down gpt-4o-2024-05-13 on October 23, 2026",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "OpenAI retired gpt-4.1 on January 20, 2026",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "Kimi launched kimi-k3",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Kimi launched K3",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "DeepSeek is retiring deepseek-v4-pro in September 2026",
+      "verdict": "unverifiable"
+    },
+    {
+      "claim": "DeepSeek V4 Pro retired on August 13",
+      "verdict": "unverifiable"
+    },
+    {
+      "claim": "OpenAI released gpt-5.6-sol",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "OpenAI released gpt-5.6-sol on August 1, 2026",
+      "verdict": "partial"
+    },
+    {
+      "claim": "Claude Fable 5 will be retired on January 1, 2027",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "Claude Fable 5 will be retired on December 1, 2027",
+      "verdict": "partial"
+    },
+    {
+      "claim": "Anthropic released claude-opus-4-1",
+      "verdict": "partial"
+    },
+    {
+      "claim": "Google released gemini-3 on May 1",
+      "verdict": "unverifiable"
+    },
+    {
+      "claim": "OpenAI released gpt-4o",
+      "verdict": "partial"
+    },
+    {
+      "claim": "OpenAI deprecated chatgpt-4o-latest",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic deprecated claude-mythos-preview",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic retired claude-mythos-preview",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "DeepSeek-V4-Flash-0731 was released",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Claude Haiku 4.5 was released by Anthropic",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "OpenAI retired gpt-5.6-sol",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "chatgpt-4o-latest retired in February 2026",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "Anthropic released a model called claude-fake-99",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "OpenAI retired gpt-4.1-nano on October 23, 2026",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "DeepSeek launched deepseek-chat",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "no vendor claim here at all",
+      "verdict": "unverifiable"
+    },
+    {
+      "claim": "OpenAI retired o3 on April 1, 2026",
+      "verdict": "contradicted"
+    },
+    {
+      "claim": "Anthropic released Claude Opus 5.5",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "Anthropic released Claude Opus 5",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "Claude Sonnet 5.5 is now available",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "claude-opus-5-5 launched on September 22, 2026",
+      "verdict": "partial",
+      "fixture": "oct"
+    },
+    {
+      "claim": "Anthropic will retire Claude Sonnet 4.5 on November 30, 2026",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "Anthropic retired Claude Sonnet 4.5 on October 31, 2026",
+      "verdict": "contradicted",
+      "fixture": "oct"
+    },
+    {
+      "claim": "Anthropic deprecated claude-sonnet-4-5",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "Claude Opus 4.6 will be retired in December 2026",
+      "verdict": "contradicted",
+      "fixture": "oct"
+    },
+    {
+      "claim": "DeepSeek retired deepseek-v4-flash",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "DeepSeek retired deepseek-v4-flash on September 10, 2026",
+      "verdict": "partial",
+      "fixture": "oct"
+    },
+    {
+      "claim": "DeepSeek released deepseek-v4-flash",
+      "verdict": "partial",
+      "fixture": "oct"
+    },
+    {
+      "claim": "DeepSeek Flash is available",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "DeepSeek V4.1 Flash released",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "DeepSeek is retiring deepseek-v4-pro",
+      "verdict": "unverifiable",
+      "fixture": "oct"
+    },
+    {
+      "claim": "OpenAI released GPT-6.1 Sol",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "OpenAI released GPT-6.1 Sol.",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "OpenAI released GPT-6 Luna on October 1",
+      "verdict": "partial",
+      "fixture": "oct"
+    },
+    {
+      "claim": "OpenAI released gpt-6.1",
+      "verdict": "contradicted",
+      "fixture": "oct"
+    },
+    {
+      "claim": "OpenAI will shut down gpt-5.1 on April 1, 2027",
+      "verdict": "confirmed",
+      "fixture": "oct"
+    },
+    {
+      "claim": "GPT-6.1 Sol shut down",
+      "verdict": "contradicted",
+      "fixture": "oct"
+    }
+  ]
+}

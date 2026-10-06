@@ -3,8 +3,8 @@
 match.py — Claim parsing + verdict logic for the Model Release Status Verifier.
 
 This is the REFERENCE implementation. The frontend ships an exact JS mirror
-(frontend/app.js MATCH section) and tests/test_match_js.js runs the SAME case
-table through both — zero diffs allowed (coupled-pair discipline, S123).
+(frontend/matcher.js; app.js only calls it) and tests/test_match_js.js runs the
+SAME case table through both — zero diffs allowed (coupled-pair discipline, S123).
 
 A claim is a free-text sentence ("DeepSeek released V4-Flash on July 31") or
 structured fields (model + status + date). Verdicts:
@@ -114,17 +114,47 @@ def _vendor_keyword_in(claim_low: str, vendor: str) -> bool:
     return any(k in claim_low for k in VENDOR_KEYWORDS.get(vendor, []))
 
 
+def _extend_id(claim: str, pos: int, mid: str, vendor: str, index: dict) -> Optional[tuple]:
+    """(extended id, span end) when mid plus the next one or two words names a
+    model in the index, longest first; None otherwise."""
+    known = set()
+    for rec in index.get("models", []):
+        if rec.get("vendor") == vendor:
+            rid = normalize_model_id(rec["model_id"])
+            known.add(rid)
+            known.add(base_id(rid))
+    parts, ends = [], []
+    for _ in range(2):
+        w = re.match(r"[ \t]+([A-Za-z0-9][A-Za-z0-9.]*)", claim[pos:])
+        if not w:
+            break
+        word = w.group(1).rstrip(".")
+        parts.append(word.lower())
+        ends.append(pos + w.end() - (len(w.group(1)) - len(word)))
+        pos += w.end()
+    for k in range(len(parts), 0, -1):
+        cand = mid + "-" + "-".join(parts[:k])
+        if cand in known:
+            return cand, ends[k - 1]
+    return None
+
+
 def identify(claim: str, index: dict) -> tuple[Optional[str], Optional[str], str, Optional[tuple]]:
     """Identify (model_ref, vendor, method, span) from the claim.
     model_ref is either a normalized model id or a normalized family name.
     method is 'id' | 'alias' | 'family'. span is (start, end) in the claim
     for the matched text, so the caller can mask it before date extraction
     (a snapshot date inside a model id is NOT the claim's date)."""
-    # layer 1: direct id pattern
+    # layer 1: direct id pattern, extended by up to two following words when
+    # the extended id is a known model ("GPT-6.1 Sol" -> gpt-6.1-sol)
     for vendor, pat in MODEL_PATTERNS:
         m = pat.search(claim)
         if m:
-            return normalize_model_id(m.group(0)), vendor, "id", m.span()
+            mid = normalize_model_id(m.group(0))
+            ext = _extend_id(claim, m.end(), mid, vendor, index)
+            if ext:
+                return ext[0], vendor, "id", (m.start(), ext[1])
+            return mid, vendor, "id", m.span()
 
     claim_low = claim.lower()
 
@@ -342,7 +372,10 @@ def verify_claim(claim: str, index: dict) -> dict:
 
     # --- retirement / deprecation claims -----------------------------------
     if cls == "retirement":
-        if not has_lifecycle:
+        # A vendor without a lifecycle page can still state a retirement
+        # elsewhere (DeepSeek's model-table footnote); use the stated record.
+        stated = [r for r in matches if r.get("kind") == "lifecycle"]
+        if not has_lifecycle and not stated:
             return {**base, "verdict": "unverifiable", "reason": (
                 f"{vendor} publishes no model-deprecation page, so retirement "
                 f"claims cannot be checked. (The model may exist — see its "
@@ -350,6 +383,19 @@ def verify_claim(claim: str, index: dict) -> dict:
             )}
         retired = [r for r in matches if r.get("status") in ("retired", "deprecated") and r.get("retirement")]
         if not retired:
+            # retired with no retirement date published (e.g. deepseek-v4-flash)
+            retired_nodate = [r for r in matches if r.get("status") == "retired" and not r.get("retirement")]
+            if retired_nodate:
+                if date_iso:
+                    return {**base, "verdict": "partial", "reason": (
+                        f"{vendor} states {model_ref} has been retired but "
+                        f"publishes no retirement date, so the claimed date "
+                        f"({date_iso}) cannot be checked."
+                    )}
+                return {**base, "verdict": "confirmed", "reason": (
+                    f"{vendor} states {model_ref} has been retired. No "
+                    f"retirement date is published."
+                )}
             # deprecated with no retirement date published (e.g. claude-mythos-preview)
             depr_nodate = [r for r in matches if r.get("status") == "deprecated" and not r.get("retirement")]
             if depr_nodate:

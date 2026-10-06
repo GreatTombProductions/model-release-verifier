@@ -101,6 +101,11 @@ def _fetched_at() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def normalize_display(name: str) -> str:
+    """'GPT-6.1 Sol' -> 'gpt-6.1-sol' (display name to id form)."""
+    return re.sub(r"\s+", "-", name.strip().lower())
+
+
 def _family_from_claude_id(mid: str) -> str:
     m = re.match(r"claude-(.+)-(\d{8})$", mid)
     if m:
@@ -108,7 +113,9 @@ def _family_from_claude_id(mid: str) -> str:
         return f"Claude {base.title()}"
     m = re.match(r"claude-(.+)$", mid)
     if m:
-        return "Claude " + m.group(1).replace("-", " ").title()
+        # claude-opus-5-5 -> Claude Opus 5.5 (same digit join as dated ids)
+        base = re.sub(r"\b(\d+)\s+(\d+)\b", r"\1.\2", m.group(1).replace("-", " "))
+        return "Claude " + base.title()
     return mid
 
 
@@ -126,13 +133,17 @@ def _parse_anthropic_history(html: str) -> List[dict]:
     """History sections: <h3> with nested div id="YYYY-MM-DD-<slug>" (the
     announcement date) + a replacement table per section."""
     records: List[dict] = []
-    parts = re.split(
-        r'<h3[^>]*>\s*<div class="group relative pt-6 pb-2" id="(\d{4}-\d{2}-\d{2})-[^"]+"',
+    # Two layouts: Aug 2026 nests the dated id in a div inside the <h3>;
+    # Oct 2026 puts it on the <h3> itself. A section runs to the next <h2>/<h3>.
+    heads = list(re.finditer(
+        r'<h3\b[^>]*?\bid="(\d{4}-\d{2}-\d{2})-[^"]+"'
+        r'|<h3[^>]*>\s*<div class="group relative pt-6 pb-2" id="(\d{4}-\d{2}-\d{2})-[^"]+"',
         html,
-    )
-    for i in range(1, len(parts) - 1, 2):
-        ann_date = parts[i]
-        body = parts[i + 1]
+    ))
+    for head in heads:
+        ann_date = head.group(1) or head.group(2)
+        nxt = re.compile(r"<h[23]\b").search(html, head.end())
+        body = html[head.end():nxt.start() if nxt else len(html)]
         if len(body) > 40000:
             continue
         for tbl in re.findall(r"<table[^>]*>(.*?)</table>", body, flags=re.S):
@@ -155,7 +166,7 @@ def _parse_anthropic_history(html: str) -> List[dict]:
                     records.append({
                         "vendor": "Anthropic",
                         "model_id": old,
-                        "family": old,
+                        "family": _family_from_claude_id(old),
                         "kind": "lifecycle",
                         "status": "retired" if ret_iso <= _today_iso() else "deprecated",
                         "announced": ann_date,
@@ -171,18 +182,32 @@ def _parse_anthropic_history(html: str) -> List[dict]:
 def parse_anthropic_deprecations(html: str, fetched_at: str = "") -> List[dict]:
     """Anthropic model-deprecations page: lifecycle table + history sections."""
     records: List[dict] = []
-    # --- lifecycle table (active with announced retirement + retired) -------
-    for row in re.findall(r"<tr[^>]*>(.*?)</tr>", html, flags=re.S):
-        cells = [_strip_tags(c) for c in re.findall(r"<td[^>]*>(.*?)</td>", row, flags=re.S)]
-        if len(cells) < 4:
+    # --- model status table, columns mapped by label ------------------------
+    status_rows = None
+    for tbl in re.findall(r"<table[^>]*>(.*?)</table>", html, flags=re.S):
+        rows = re.findall(r"<tr[^>]*>(.*?)</tr>", tbl, flags=re.S)
+        header = [_strip_tags(c) for c in re.findall(r"<t[hd][^>]*>(.*?)</t[hd]>", rows[0], flags=re.S)] if rows else []
+        if header and header[0] == "API model name":
+            want = ["API model name", "Current state", "Deprecated", "Tentative retirement date"]
+            missing = [w for w in want if w not in header]
+            if missing:
+                raise ValueError(f"Anthropic status table: missing column(s) {missing}; header {header}")
+            cols = [header.index(w) for w in want]
+            status_rows = [[cells[i] if i < len(cells) else "" for i in cols]
+                           for cells in ([_strip_tags(c) for c in re.findall(r"<td[^>]*>(.*?)</td>", r, flags=re.S)] for r in rows[1:])
+                           if cells]
+            break
+    if status_rows is None:
+        raise ValueError("Anthropic deprecations page: no model status table ('API model name' header) found")
+    for model_id, status, announced, retirement in status_rows:
+        if not model_id:
             continue
-        model_id, status, announced, retirement = cells[:4]
-        if not model_id or not status:
-            continue
-        if status not in ("Active", "Retired"):
-            continue
+        if status not in ("Active", "Deprecated", "Retired"):
+            raise ValueError(f"Anthropic status table: unknown state {status!r} for {model_id}")
         announced_iso = _parse_us_date(announced) if announced and announced != "N/A" else None
-        ret_iso = _parse_us_date(retirement) if retirement and retirement != "N/A" else None
+        ret_iso = _parse_us_date(retirement) if retirement and retirement not in ("N/A", "To be announced") else None
+        if retirement and retirement not in ("N/A", "To be announced") and not ret_iso and not _parse_not_sooner(retirement):
+            raise ValueError(f"Anthropic status table: unreadable retirement {retirement!r} for {model_id}")
         # "Not sooner than <date>" on an active row is an earliest-retirement
         # BOUND, not a retirement date — keep it in its own field so it is
         # never quoted as an actual retirement.
@@ -192,18 +217,22 @@ def parse_anthropic_deprecations(html: str, fetched_at: str = "") -> List[dict]:
             "model_id": model_id,
             "family": _family_from_claude_id(model_id),
             "kind": "lifecycle",
-            "status": "retired" if status == "Retired" else "active",
+            "status": status.lower(),
+            "stated_status": status,
             "announced": announced_iso,
             "retirement": ret_iso,
             "retirement_not_before": not_before,
             "replacement": None,
             "source_url": ANTHROPIC_DEPRECATIONS_URL,
-            "evidence": f"{status}; retirement {retirement}" if ret_iso or not_before
-                        else f"{status}; no retirement announced",
+            "evidence": (f"{status}; retirement {retirement}" if ret_iso or not_before
+                         else f"{status}; deprecated {announced}; tentative retirement date: {retirement}" if status == "Deprecated"
+                         else f"{status}; no retirement announced"),
             "note": None,
         }
         if rec["status"] == "active" and rec["retirement"] is None:
             rec["note"] = "No retirement announced" if not not_before else None
+        elif rec["status"] == "deprecated" and rec["retirement"] is None:
+            rec["note"] = "Deprecated with no retirement date published"
         records.append(rec)
 
     # --- merge history sections (announced dates + replacements) ------------
@@ -231,7 +260,7 @@ def parse_anthropic_deprecations(html: str, fetched_at: str = "") -> List[dict]:
     # --- deprecated-but-not-retired (prose) ---------------------------------
     text = _text(html)
     m = re.search(r"Claude Mythos Preview\s*\(\s*(claude-mythos-preview)\s*\) is deprecated", text)
-    if m:
+    if m and m.group(1) not in by_id:
         records.append({
             "vendor": "Anthropic",
             "model_id": m.group(1),
@@ -265,6 +294,8 @@ def parse_anthropic_models(html: str, fetched_at: str = "") -> List[dict]:
         ids_row = None
         header_row = None
         for row in rows:
+            # Oct 2026: header cells carry a tagline in a text-caption span.
+            row = re.sub(r'<span class="text-caption[^"]*">.*?</span>', "", row, flags=re.S)
             cells = [_strip_tags(c) for c in re.findall(r"<t[hd][^>]*>(.*?)</t[hd]>", row, flags=re.S)]
             if not cells:
                 continue
@@ -291,6 +322,8 @@ def parse_anthropic_models(html: str, fetched_at: str = "") -> List[dict]:
                 "source_url": ANTHROPIC_MODELS_URL,
                 "evidence": f"Listed on the model overview table as {family} ({mid})",
             })
+    if not records:
+        raise ValueError("Anthropic models overview: no 'Claude API ID' row with model ids found")
     for rec in records:
         rec["fetched_at"] = fetched_at or _fetched_at()
     return records
@@ -353,6 +386,8 @@ def parse_openai_deprecations(html: str, fetched_at: str = "") -> List[dict]:
                     "evidence": f"Announced {ann_date}; shutdown {ret_date}"
                                 + (f"; replacement {cells[i_repl]}" if cells[i_repl] else ""),
                 })
+    if not records:
+        raise ValueError("OpenAI deprecations page: no shutdown/replacement tables parsed")
     seen = set()
     out = []
     for rec in records:
@@ -388,18 +423,26 @@ def parse_openai_models(html: str, fetched_at: str = "") -> List[dict]:
         if prev > 0:
             start = prev + 2
         snippet = text[start:m.end() + 80].strip()
+        # Card title just before the tagline: "... GPT-6.1 Sol Near-Astra ... Model ID gpt-6.1-sol".
+        family = mid
+        head = text[max(0, m.start() - 220):m.start()]
+        titles = [t for t in re.findall(r"(GPT-[0-9][0-9.]*(?: [A-Z][a-z]+)?)", head) if normalize_display(t) == mid]
+        if titles:
+            family = titles[-1]
         records.append({
             "vendor": "OpenAI",
             "model_id": mid,
-            "family": mid,
+            "family": family,
             "kind": "current",
             "status": "listed",
             "announced": None,
             "retirement": None,
             "replacement": None,
             "source_url": OPENAI_MODELS_URL,
-            "evidence": "Listed as a current model: " + snippet[-200:],
+            "evidence": ("Listed as a current model" + (f" ({family})" if family != mid else "") + ": " + snippet[-200:]),
         })
+    if not records:
+        raise ValueError("OpenAI models page: no 'Model ID gpt-…' cards found")
     for rec in records:
         rec["fetched_at"] = fetched_at or _fetched_at()
     return records
@@ -411,62 +454,73 @@ def parse_openai_models(html: str, fetched_at: str = "") -> List[dict]:
 
 def parse_deepseek_docs(html: str, fetched_at: str = "") -> List[dict]:
     """DeepSeek publishes no deprecation/lifecycle page. The api-docs landing
-    page names the current API models (deepseek-v4-flash, deepseek-v4-pro) and
-    the version-update sentence ('updated to DeepSeek-V4-Flash-0731...')."""
+    page's PARAM/VALUE table has a `model` row whose <code> cells are the
+    current API model names, and a footnote under it. Two footnote wordings
+    are known; any other wording fails the build (fail closed):
+
+      Aug 2026: "The deepseek-v4-flash model has been updated to
+                 DeepSeek-V4-Flash-0731, and the deepseek-v4-pro model has
+                 been updated to DeepSeek-V4-Pro-0813."
+      Oct 2026: "Use deepseek-flash as the model name. The legacy names
+                 deepseek-v4-flash and deepseek-v4-flash-vision-exp are still
+                 accepted, but the corresponding models have been retired,
+                 their requests are served by the DeepSeek-V4.1-Flash model..."
+    """
+    ids: List[str] = []
+    for row in re.findall(r"<tr[^>]*>(.*?)</tr>", html, flags=re.S):
+        cells = re.findall(r"<td[^>]*>(.*?)</td>", row, flags=re.S)
+        # Label may carry a footnote marker: "model(1)" in the Aug 2026 layout.
+        if len(cells) >= 2 and re.sub(r"\(\d+\)", "", _strip_tags(cells[0])).strip().lower() == "model":
+            ids = [_strip_tags(c).lower() for c in re.findall(r"<code>(.*?)</code>", cells[1], flags=re.S)]
+            break
+    if not ids or not all(re.match(r"^deepseek-[a-z0-9.-]+$", i) for i in ids):
+        raise ValueError(f"DeepSeek docs: model row not found or unreadable ({ids})")
     text = _text(html)
     records: List[dict] = []
-    seen = set()
-    # update sentence as evidence (verbatim-ish)
+
+    def rec(mid, family, kind, status, evidence, **extra):
+        records.append({
+            "vendor": "DeepSeek", "model_id": mid, "family": family, "kind": kind,
+            "status": status, "announced": None, "retirement": None, "replacement": None,
+            "source_url": DEEPSEEK_DOCS_URL, "evidence": evidence, **extra,
+        })
+
     upd = re.search(
-        r"The deepseek-v4-flash model has been updated to ([^.,]+), and the "
-        r"deepseek-v4-pro model has been updated to ([^.,]+)\.",
+        r"The (deepseek-[a-z0-9.-]+) model has been updated to ([^.,]+), and the "
+        r"(deepseek-[a-z0-9.-]+) model has been updated to ([^.,]+?)\.(?:\s|$)",
         text,
     )
-    flash_ver = upd.group(1).strip() if upd else None
-    pro_ver = upd.group(2).strip() if upd else None
+    legacy = re.search(
+        r"Use (deepseek-[a-z0-9.-]+) as the model name\. The legacy names ([^.]+?) are still accepted, "
+        r"but the corresponding models have been retired, their requests are served by the "
+        r"([A-Za-z0-9.-]+) model and billed at the ([A-Za-z]+) price\.",
+        text,
+    )
+    if "(1)" in text and not (upd or legacy):
+        raise ValueError("DeepSeek docs: model footnote wording not recognized; inspect before parsing")
 
-    for mid in ("deepseek-v4-flash", "deepseek-v4-pro"):
-        if mid in seen:
-            continue
-        seen.add(mid)
-        ver = flash_ver if "flash" in mid else pro_ver
-        records.append({
-            "vendor": "DeepSeek",
-            "model_id": mid,
-            "family": mid,
-            "kind": "current",
-            "status": "listed",
-            "announced": None,
-            "retirement": None,
-            "replacement": None,
-            "source_url": DEEPSEEK_DOCS_URL,
-            "evidence": (
-                "Listed in the API docs model list"
-                + (f"; updated to {ver}" if ver else "")
-            ),
-        })
-    # the dated version snapshots themselves (e.g. DeepSeek-V4-Flash-0731)
-    for ver, base in ((flash_ver, "deepseek-v4-flash"), (pro_ver, "deepseek-v4-pro")):
-        if not ver:
-            continue
-        key = ver.lower()
-        if key in seen:
-            continue
-        seen.add(key)
-        records.append({
-            "vendor": "DeepSeek",
-            "model_id": key,
-            "family": ver,
-            "kind": "current",
-            "status": "listed",
-            "announced": None,
-            "retirement": None,
-            "replacement": None,
-            "source_url": DEEPSEEK_DOCS_URL,
-            "evidence": f"Named on the API docs page as the current version of {base}",
-        })
-    for rec in records:
-        rec["fetched_at"] = fetched_at or _fetched_at()
+    updated_to = {}
+    if upd:
+        updated_to = {upd.group(1).lower(): upd.group(2).strip(), upd.group(3).lower(): upd.group(4).strip()}
+    for mid in ids:
+        rec(mid, mid, "current", "listed", "Listed in the API docs model table"
+            + (f"; updated to {updated_to[mid]}" if mid in updated_to else ""))
+    if upd:
+        for base, ver in ((upd.group(1), upd.group(2).strip()), (upd.group(3), upd.group(4).strip())):
+            if ver.lower() not in ids:
+                rec(ver.lower(), ver, "current", "listed", f"Named on the API docs page as the current version of {base}")
+    if legacy:
+        served_by = legacy.group(3)
+        sentence = legacy.group(0)  # verbatim vendor text
+        for old in re.findall(r"deepseek-[a-z0-9.-]+", legacy.group(2)):
+            # Evidence is the vendor's sentence verbatim (the page shows it in quotes).
+            rec(old, old, "lifecycle", "retired", sentence,
+                replacement=legacy.group(1), stated_status="retired")
+        if served_by.lower() not in ids:
+            rec(served_by.lower(), served_by, "current", "listed",
+                "Named on the API docs page as the model that serves requests sent to the retired legacy names")
+    for r in records:
+        r["fetched_at"] = fetched_at or _fetched_at()
     return records
 
 
@@ -497,6 +551,8 @@ def parse_kimi_platform(html: str, fetched_at: str = "") -> List[dict]:
             "source_url": KIMI_PLATFORM_URL,
             "evidence": f"Quickstart doc linked from the platform page: {m.group(1)}",
         })
+    if not records:
+        raise ValueError("Kimi platform page: no /docs/guide/kimi-…-quickstart links found")
     for rec in records:
         rec["fetched_at"] = fetched_at or _fetched_at()
     return records

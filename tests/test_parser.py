@@ -224,6 +224,38 @@ def test_deepseek_docs_oct_layout():
         check("deepseek fails closed on unknown footnote wording", True)
 
 
+DEEPSEEK_DOCS_1017 = """
+<table><thead><tr><th>PARAM</th><th>VALUE</th></tr></thead><tbody>
+<tr><td>model</td><td><code>deepseek-flash</code><sup>(1)</sup><br><code>deepseek-v4-pro</code></td></tr></tbody></table>
+<div><p>(1) Use <code>deepseek-flash</code> as the model name. It is now served by DeepSeek-V4.1-Flash-1017,
+and the calling method remains unchanged. The legacy names <code>deepseek-v4-flash</code> and
+<code>deepseek-v4-flash-vision-exp</code> are still accepted, but the corresponding models have been retired;
+their requests are served by DeepSeek-V4.1-Flash-1017 and billed at the Flash price.</p></div>
+"""
+
+
+def test_deepseek_docs_1017_layout():
+    recs = P.parse_deepseek_docs(DEEPSEEK_DOCS_1017, fetched_at="2026-10-30T00:00:00Z")
+    by_id = {r["model_id"]: r for r in recs}
+    check("deepseek 1017: flash notes the dated serving model",
+          "now served by DeepSeek-V4.1-Flash-1017" in by_id["deepseek-flash"]["evidence"])
+    check("deepseek 1017: dated serving model is its own row",
+          by_id["deepseek-v4.1-flash-1017"]["kind"] == "current"
+          and by_id["deepseek-v4.1-flash-1017"]["family"] == "DeepSeek-V4.1-Flash-1017")
+    check("deepseek 1017: undated serving name is not invented",
+          "deepseek-v4.1-flash" not in by_id)
+    for old in ("deepseek-v4-flash", "deepseek-v4-flash-vision-exp"):
+        r = by_id[old]
+        check(f"deepseek 1017: {old} still retired, replacement deepseek-flash",
+              r["status"] == "retired" and r["replacement"] == "deepseek-flash"
+              and "DeepSeek-V4.1-Flash-1017" in r["evidence"])
+    try:
+        P.parse_deepseek_docs(DEEPSEEK_DOCS_1017.replace("DeepSeek-V4.1-Flash-1017", "DeepSeek-V4.1-Flash", 1))
+        check("deepseek 1017: two serving names fail closed", False)
+    except ValueError:
+        check("deepseek 1017: two serving names fail closed", True)
+
+
 def test_real_captures_both_layouts():
     """Every capture in data/raw parses; old captures stay a regression test."""
     raw = Path(__file__).resolve().parent.parent / "data" / "raw"
@@ -274,5 +306,6 @@ if __name__ == "__main__":
     test_anthropic_deprecations_oct_layout()
     test_anthropic_fails_closed()
     test_deepseek_docs_oct_layout()
+    test_deepseek_docs_1017_layout()
     test_real_captures_both_layouts()
     print("ALL PASS")

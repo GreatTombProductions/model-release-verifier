@@ -39,7 +39,7 @@ const { chromium } = require('playwright');
 
     let v = await verdict('DeepSeek retired deepseek-v4-flash');
     assert.strictEqual(v.badge, 'confirmed', v.reason);
-    assert((await page.locator('#result .evidence').first().textContent()).includes('served by the DeepSeek-V4.1-Flash model'));
+    assert((await page.locator('#result .evidence').first().textContent()).includes('served by DeepSeek-V4.1-Flash-1017'));
     v = await verdict('Anthropic will retire Claude Sonnet 4.5 on November 30, 2026');
     assert.strictEqual(v.badge, 'confirmed', v.reason);
     v = await verdict('OpenAI released GPT-6.1 Sol.');

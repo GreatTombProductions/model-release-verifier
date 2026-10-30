@@ -35,6 +35,7 @@ Index record shape:
 from __future__ import annotations
 
 import html as html_mod
+import os
 import re
 from datetime import date, datetime, timezone
 from typing import List, Optional
@@ -94,6 +95,16 @@ def _parse_us_date(s: str) -> Optional[str]:
 
 
 def _today_iso() -> str:
+    """Date used for statuses derived from a shutdown date.
+
+    MODEL_RELEASE_AS_OF=YYYY-MM-DD lets a freshness rebuild name the day it is
+    judging. Unset, this is today's date. The semantic pin does not include
+    these derived statuses, so the pin stays put when only the clock moves.
+    """
+    override = os.environ.get("MODEL_RELEASE_AS_OF", "").strip()
+    if override:
+        date.fromisoformat(override)  # reject a bad override rather than publish it
+        return override
     return date.today().isoformat()
 
 
@@ -465,6 +476,10 @@ def parse_deepseek_docs(html: str, fetched_at: str = "") -> List[dict]:
                  deepseek-v4-flash and deepseek-v4-flash-vision-exp are still
                  accepted, but the corresponding models have been retired,
                  their requests are served by the DeepSeek-V4.1-Flash model..."
+      Oct 30 2026: same legacy sentence, plus "It is now served by
+                 DeepSeek-V4.1-Flash-1017, and the calling method remains
+                 unchanged." The legacy clause uses a semicolon and names the
+                 dated model with no "the ... model" wrapper.
     """
     ids: List[str] = []
     for row in re.findall(r"<tr[^>]*>(.*?)</tr>", html, flags=re.S):
@@ -490,12 +505,32 @@ def parse_deepseek_docs(html: str, fetched_at: str = "") -> List[dict]:
         r"(deepseek-[a-z0-9.-]+) model has been updated to ([^.,]+?)\.(?:\s|$)",
         text,
     )
+    # October 6: "retired, ... served by the <Name> model".
+    # October 30: an extra "now served by <dated>" sentence, a semicolon,
+    # and "served by <dated>" with no "the" / "model" wrapper.
     legacy = re.search(
         r"Use (deepseek-[a-z0-9.-]+) as the model name\. The legacy names ([^.]+?) are still accepted, "
         r"but the corresponding models have been retired, their requests are served by the "
         r"([A-Za-z0-9.-]+) model and billed at the ([A-Za-z]+) price\.",
         text,
     )
+    legacy_now = None
+    if not legacy:
+        legacy = re.search(
+            r"Use (deepseek-[a-z0-9.-]+) as the model name\. "
+            r"It is now served by ([A-Za-z0-9.-]+), and the calling method remains unchanged\. "
+            r"The legacy names ([^.]+?) are still accepted, "
+            r"but the corresponding models have been retired; their requests are served by "
+            r"([A-Za-z0-9.-]+) and billed at the ([A-Za-z]+) price\.",
+            text,
+        )
+        if legacy:
+            legacy_now = legacy.group(2)
+            if legacy_now != legacy.group(4):
+                raise ValueError(
+                    "DeepSeek docs: footnote names two different models as what serves requests "
+                    f"({legacy_now} vs {legacy.group(4)})"
+                )
     if "(1)" in text and not (upd or legacy):
         raise ValueError("DeepSeek docs: model footnote wording not recognized; inspect before parsing")
 
@@ -503,16 +538,21 @@ def parse_deepseek_docs(html: str, fetched_at: str = "") -> List[dict]:
     if upd:
         updated_to = {upd.group(1).lower(): upd.group(2).strip(), upd.group(3).lower(): upd.group(4).strip()}
     for mid in ids:
-        rec(mid, mid, "current", "listed", "Listed in the API docs model table"
-            + (f"; updated to {updated_to[mid]}" if mid in updated_to else ""))
+        note = f"; updated to {updated_to[mid]}" if mid in updated_to else ""
+        if legacy_now and mid == legacy.group(1).lower():
+            note += f"; now served by {legacy_now}"
+        rec(mid, mid, "current", "listed", "Listed in the API docs model table" + note)
     if upd:
         for base, ver in ((upd.group(1), upd.group(2).strip()), (upd.group(3), upd.group(4).strip())):
             if ver.lower() not in ids:
                 rec(ver.lower(), ver, "current", "listed", f"Named on the API docs page as the current version of {base}")
     if legacy:
-        served_by = legacy.group(3)
+        # October 6 groups are (use, legacy names, served-by). October 30 inserts
+        # the dated "now served by" name at group 2 and shifts the other two.
+        served_by = legacy.group(4) if legacy_now else legacy.group(3)
+        legacy_names = legacy.group(3) if legacy_now else legacy.group(2)
         sentence = legacy.group(0)  # verbatim vendor text
-        for old in re.findall(r"deepseek-[a-z0-9.-]+", legacy.group(2)):
+        for old in re.findall(r"deepseek-[a-z0-9.-]+", legacy_names):
             # Evidence is the vendor's sentence verbatim (the page shows it in quotes).
             rec(old, old, "lifecycle", "retired", sentence,
                 replacement=legacy.group(1), stated_status="retired")

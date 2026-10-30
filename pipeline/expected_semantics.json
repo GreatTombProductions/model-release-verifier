@@ -78,7 +78,7 @@
    "2025-08-13",
    "2025-10-28",
    null,
-   "claude-sonnet-4-6"
+   "claude-sonnet-5-5"
   ],
   [
    "claude-3-5-sonnet-20241022",
@@ -88,7 +88,7 @@
    "2025-08-13",
    "2025-10-28",
    null,
-   "claude-sonnet-4-6"
+   "claude-sonnet-5-5"
   ],
   [
    "claude-3-7-sonnet-20250219",
@@ -98,7 +98,7 @@
    "2025-10-28",
    "2026-02-19",
    null,
-   "claude-sonnet-4-6"
+   "claude-sonnet-5-5"
   ],
   [
    "claude-3-haiku-20240307",
@@ -128,7 +128,7 @@
    "2025-01-21",
    "2025-07-21",
    null,
-   "claude-sonnet-4-6"
+   "claude-sonnet-5-5"
   ],
   [
    "claude-fable-5",
@@ -158,6 +158,16 @@
    null,
    null,
    "2026-10-15",
+   null
+  ],
+  [
+   "claude-haiku-5-5",
+   "Claude Haiku 5.5",
+   "lifecycle",
+   "Active",
+   null,
+   null,
+   "2027-10-07",
    null
   ],
   [
@@ -308,7 +318,7 @@
    "2026-04-14",
    "2026-06-15",
    null,
-   "claude-sonnet-4-6"
+   "claude-sonnet-5-5"
   ],
   [
    "claude-sonnet-4-5-20250929",
@@ -363,8 +373,8 @@
    null
   ],
   [
-   "claude-haiku-4-5-20251001",
-   "Claude Haiku 4.5",
+   "claude-haiku-5-5",
+   "Claude Haiku 5.5",
    "current",
    "listed",
    null,
@@ -623,56 +633,6 @@
    "2026-09-28",
    null,
    "gpt-5.6-terra"
-  ],
-  [
-   "ft-babbage-002",
-   "ft-babbage-002",
-   "lifecycle",
-   null,
-   "2026-04-22",
-   "2026-10-23",
-   null,
-   "gpt-5.6-terra"
-  ],
-  [
-   "ft-davinci-002",
-   "ft-davinci-002",
-   "lifecycle",
-   null,
-   "2026-04-22",
-   "2026-10-23",
-   null,
-   "gpt-5.6-terra"
-  ],
-  [
-   "ft-gpt-3.5-turbo",
-   "ft-gpt-3.5-turbo",
-   "lifecycle",
-   null,
-   "2026-04-22",
-   "2026-10-23",
-   null,
-   "gpt-5.6-terra"
-  ],
-  [
-   "ft-gpt-4",
-   "ft-gpt-4",
-   "lifecycle",
-   null,
-   "2026-04-22",
-   "2026-10-23",
-   null,
-   "gpt-5.6-sol"
-  ],
-  [
-   "ft-gpt-4.1-nano-2025-04-14",
-   "ft-gpt-4.1-nano-2025-04-14",
-   "lifecycle",
-   null,
-   "2026-04-22",
-   "2026-10-23",
-   null,
-   "gpt-5.6-luna"
   ],
   [
    "ft-o4-mini-2025-04-16",
@@ -1035,6 +995,26 @@
    "gpt-4o-mini-transcribe-2025-12-15"
   ],
   [
+   "gpt-4o-mini-transcribe-2025-12-15",
+   "gpt-4o-mini-transcribe-2025-12-15",
+   "lifecycle",
+   null,
+   "2026-08-26",
+   "2027-02-26",
+   null,
+   "gpt-live-transcribe or gpt-transcribe"
+  ],
+  [
+   "gpt-4o-mini-tts",
+   "gpt-4o-mini-tts",
+   "lifecycle",
+   null,
+   "2026-10-01",
+   "2027-01-06",
+   null,
+   "gpt-realtime-2.1-mini"
+  ],
+  [
    "gpt-4o-mini-tts-2025-03-20",
    "gpt-4o-mini-tts-2025-03-20",
    "lifecycle",
@@ -1135,6 +1115,16 @@
    "gpt-live-transcribe or gpt-transcribe"
   ],
   [
+   "gpt-5",
+   "gpt-5",
+   "lifecycle",
+   null,
+   "2026-06-11",
+   "2026-12-11",
+   null,
+   "gpt-5.6-sol"
+  ],
+  [
    "gpt-5-2025-08-07",
    "gpt-5-2025-08-07",
    "lifecycle",
@@ -1163,6 +1153,16 @@
    "2026-07-23",
    null,
    "gpt-5.6-sol"
+  ],
+  [
+   "gpt-5-mini",
+   "gpt-5-mini",
+   "lifecycle",
+   null,
+   "2026-06-11",
+   "2026-12-11",
+   null,
+   "gpt-5.6-terra"
   ],
   [
    "gpt-5-mini-2025-08-07",
@@ -1175,6 +1175,16 @@
    "gpt-5.6-terra"
   ],
   [
+   "gpt-5-nano",
+   "gpt-5-nano",
+   "lifecycle",
+   null,
+   "2026-06-11",
+   "2026-12-11",
+   null,
+   "gpt-5.6-luna"
+  ],
+  [
    "gpt-5-nano-2025-08-07",
    "gpt-5-nano-2025-08-07",
    "lifecycle",
@@ -1183,6 +1193,16 @@
    "2026-12-11",
    null,
    "gpt-5.6-luna"
+  ],
+  [
+   "gpt-5-pro",
+   "gpt-5-pro",
+   "lifecycle",
+   null,
+   "2026-06-11",
+   "2026-12-11",
+   null,
+   "gpt-5.6-sol ( reasoning.mode: pro )"
   ],
   [
    "gpt-5-pro-2025-10-06",
@@ -1197,6 +1217,16 @@
   [
    "gpt-5.1",
    "gpt-5.1",
+   "lifecycle",
+   null,
+   "2026-10-01",
+   "2027-04-01",
+   null,
+   "gpt-6-sol"
+  ],
+  [
+   "gpt-5.1-2025-11-13",
+   "gpt-5.1-2025-11-13",
    "lifecycle",
    null,
    "2026-10-01",
@@ -1305,8 +1335,28 @@
    "gpt-6-luna"
   ],
   [
+   "gpt-5.4-nano-2026-03-17",
+   "gpt-5.4-nano-2026-03-17",
+   "lifecycle",
+   null,
+   "2026-10-01",
+   "2027-04-01",
+   null,
+   "gpt-6-luna"
+  ],
+  [
    "gpt-audio",
    "gpt-audio",
+   "lifecycle",
+   null,
+   "2026-07-20",
+   "2027-01-20",
+   null,
+   "gpt-audio-1.5"
+  ],
+  [
+   "gpt-audio-2025-08-28",
+   "gpt-audio-2025-08-28",
    "lifecycle",
    null,
    "2026-07-20",
@@ -1331,6 +1381,16 @@
    null,
    "2026-04-22",
    "2026-07-23",
+   null,
+   "gpt-audio-1.5"
+  ],
+  [
+   "gpt-audio-mini-2025-12-15",
+   "gpt-audio-mini-2025-12-15",
+   "lifecycle",
+   null,
+   "2026-07-20",
+   "2027-01-20",
    null,
    "gpt-audio-1.5"
   ],
@@ -1365,8 +1425,28 @@
    "gpt-image-2.5-sunburst or gpt-image-2.5-flare"
   ],
   [
+   "gpt-image-1.5-2025-12-16",
+   "gpt-image-1.5-2025-12-16",
+   "lifecycle",
+   null,
+   "2026-06-02",
+   "2026-12-01",
+   null,
+   "gpt-image-2.5-sunburst or gpt-image-2.5-flare"
+  ],
+  [
    "gpt-realtime",
    "gpt-realtime",
+   "lifecycle",
+   null,
+   "2026-07-20",
+   "2027-01-20",
+   null,
+   "gpt-realtime-2.1"
+  ],
+  [
+   "gpt-realtime-2025-08-28",
+   "gpt-realtime-2025-08-28",
    "lifecycle",
    null,
    "2026-07-20",
@@ -1391,6 +1471,16 @@
    null,
    "2026-04-22",
    "2026-07-23",
+   null,
+   "gpt-realtime-2.1-mini"
+  ],
+  [
+   "gpt-realtime-mini-2025-12-15",
+   "gpt-realtime-mini-2025-12-15",
+   "lifecycle",
+   null,
+   "2026-07-20",
+   "2027-01-20",
    null,
    "gpt-realtime-2.1-mini"
   ],
@@ -1455,6 +1545,16 @@
    "gpt-5.6-sol ( reasoning.mode: pro )"
   ],
   [
+   "o3",
+   "o3",
+   "lifecycle",
+   null,
+   "2026-06-11",
+   "2026-12-11",
+   null,
+   "gpt-5.6-sol"
+  ],
+  [
    "o3-2025-04-16",
    "o3-2025-04-16",
    "lifecycle",
@@ -1503,6 +1603,16 @@
    "2026-10-23",
    null,
    "gpt-5.6-sol"
+  ],
+  [
+   "o3-pro",
+   "o3-pro",
+   "lifecycle",
+   null,
+   "2026-06-11",
+   "2026-12-11",
+   null,
+   "gpt-5.6-sol ( reasoning.mode: pro )"
   ],
   [
    "o3-pro-2025-06-10",
@@ -1885,6 +1995,16 @@
    null,
    null,
    null
+  ],
+  [
+   "gpt-6.1-terra",
+   "GPT-6.1 Terra",
+   "current",
+   "listed",
+   null,
+   null,
+   null,
+   null
   ]
  ],
  "deepseek_docs": [
@@ -1929,8 +2049,8 @@
    null
   ],
   [
-   "deepseek-v4.1-flash",
-   "DeepSeek-V4.1-Flash",
+   "deepseek-v4.1-flash-1017",
+   "DeepSeek-V4.1-Flash-1017",
    "current",
    "listed",
    null,
@@ -1941,8 +2061,8 @@
  ],
  "kimi_platform": [
   [
-   "kimi-k2-6",
-   "kimi-k2-6",
+   "kimi-k3",
+   "kimi-k3",
    "current",
    "listed",
    null,
@@ -1951,18 +2071,8 @@
    null
   ],
   [
-   "kimi-k2-7-code",
-   "kimi-k2-7-code",
-   "current",
-   "listed",
-   null,
-   null,
-   null,
-   null
-  ],
-  [
-   "kimi-k3",
-   "kimi-k3",
+   "kimi-k3-1-pro",
+   "kimi-k3-1-pro",
    "current",
    "listed",
    null,
